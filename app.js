@@ -6,8 +6,27 @@ var express                 = require('express'),
     LocalStrategy           = require('passport-local'),
     passportLocalMongoose   = require('passport-local-mongoose');
 
+mongoose.connect("mongodb://localhost/auth_demo_app", { useNewUrlParser: true });
 var app = express();
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(require("express-session")({
+  secret: "Ultra secret security key.",
+  resave: false,
+  saveUninitialized: false
+}));
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+// ROUTES
 
 app.get("/", function(req, res){
   res.render("home");
