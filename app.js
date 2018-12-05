@@ -36,6 +36,26 @@ app.get("/secret", function(req, res){
   res.render("secret");
 });
 
+// AUTHENTICATION
+
+app.get("/register", function(req, res){
+  res.render("register");
+});
+
+app.post("/register", function(req, res){
+  req.body.username
+  req.body.password
+  User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+    if(err){
+      console.log(err);
+      return res.render('register');
+    }
+    passport.authenticate("local")(req, res, function(){
+      res.redirect("/secret");
+    });
+  });
+});
+
 var listener = app.listen(3000, 'localhost', function(){
   var address = listener.address().address;
   var port = listener.address().port;
